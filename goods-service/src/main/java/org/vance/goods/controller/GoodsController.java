@@ -18,8 +18,8 @@ public class GoodsController {
 
     @ApiOperation(value = "查找商品信息")
     @GetMapping("/queryGoodsInfo/{goodsId}")
-    public Result queryGoodsInfo(@PathVariable("goodsId") Integer goodsId){
+    public GoodsInfo queryGoodsInfo(@PathVariable("goodsId") Integer goodsId){
         GoodsInfo goodsInfo = goodsService.quertGoodsById(goodsId);
-        return Result.success("success", goodsInfo);
+        return goodsInfo;
     }
 }

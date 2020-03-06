@@ -13,7 +13,6 @@ public class ShoppingOrderService {
     private static final Map<String, Order> ORDER_DATA = new HashMap<String, Order>();
 
     static {
-        // 模拟数据库，构造测试数据
         Order order = new Order();
         order.setOrderId("201810300001");
         order.setCreateDate(new Date());
@@ -21,11 +20,13 @@ public class ShoppingOrderService {
         order.setUserId(1L);
         List<OrderDetail> orderDetails = new ArrayList<>();
 
-        GoodsInfo item = new GoodsInfo();// 此处并没有商品的数据，只是保存了商品ID，需要调用商品微服务获取
+        // 构造第一个商品数据
+        GoodsInfo item = new GoodsInfo();
         item.setId(1);
         orderDetails.add(new OrderDetail(order.getOrderId(), item));
 
-        item = new GoodsInfo(); // 构造第二个商品数据
+        // 构造第二个商品数据
+        item = new GoodsInfo();
         item.setId(2);
         orderDetails.add(new OrderDetail(order.getOrderId(), item));
 
