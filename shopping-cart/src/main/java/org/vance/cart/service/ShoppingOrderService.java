@@ -2,9 +2,9 @@ package org.vance.cart.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.vance.cart.model.GoodsInfo;
-import org.vance.cart.model.Order;
-import org.vance.cart.model.OrderDetail;
+import org.vance.cart.model.beanModel.GoodsInfo;
+import org.vance.cart.model.beanModel.Order;
+import org.vance.cart.model.beanModel.OrderDetail;
 
 import java.util.*;
 

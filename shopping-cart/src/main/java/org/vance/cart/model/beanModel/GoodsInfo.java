@@ -1,4 +1,4 @@
-package org.vance.cart.model;
+package org.vance.cart.model.beanModel;
 
 public class GoodsInfo {
 
