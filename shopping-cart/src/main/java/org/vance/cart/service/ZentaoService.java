@@ -2,16 +2,17 @@ package org.vance.cart.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.vance.cart.model.zentao.ZentaoProjectBuild;
-import org.vance.cart.model.zentao.ZentaoSession;
+import org.vance.cart.model.zentao.ZentaoProductCreate;
+import org.vance.cart.model.zentao.ZentaoProjectBasic;
+import org.vance.cart.model.zentao.ZentaoProjectCreate;
 import org.vance.cart.util.JsonUtil;
 import org.vance.cart.util.RestUtil;
 import org.vance.cart.util.ZenTaoAPIContent;
+import org.vance.cart.util.ZentaoSession;
 import org.vance.cart.util.exception.ZentaoRestException;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Description: TODO
@@ -19,49 +20,73 @@ import java.util.Map;
  */
 public class ZentaoService {
 
-    private static final String PASSWORD = "A5136381gf";
-    private static final String ACCOUNT = "admin";
-    /**
-     * 获取SessionID
-     * @throws IOException
-     */
-    public ZentaoSession getSessionId() throws ZentaoRestException {
-        String restStr = RestUtil.getJsonMethod(ZenTaoAPIContent.GET_SESSIONID, null);
-        return JsonUtil.parseZentaoData(restStr, ZentaoSession.class);
+    private static final String JSON_SUFFIX = "&t=json";
+    private static final String PROJECTS = "projects";
+    private static final String PRODUCTS = "products";
+
+    private String session;
+
+    public ZentaoService() throws ZentaoRestException {
+        session = "?zentaosid=" + ZentaoSession.getInstance().getSession();
     }
-
     /**
-     * 使用获取到的sessionID登录
-     */
-    public String loginZentao() throws ZentaoRestException {
-
-        ZentaoSession sessionBean = getSessionId();
-        JSONObject loginJson = new JSONObject();
-        loginJson.put("account", ACCOUNT);
-        loginJson.put("password", PASSWORD);
-        String result = RestUtil.postMethod(ZenTaoAPIContent.POST_LOGIN + "zentaosid="
-                        + sessionBean.getSessionID(), loginJson);
-        if(result.contains("account")){
-            return sessionBean.getSessionID();
-        }
-        return "";
-    }
-
-    /**
-     * 登出禅道
+     *
+     * @param zentaoProjectCreate
+     * @return
      * @throws ZentaoRestException
      */
-    public void logoutZentao() throws ZentaoRestException{
-        RestUtil.getJsonMethod(ZenTaoAPIContent.GET_LOGOUT, null);
-    }
-    // 创建项目
-    public String buildProject(String sessionId, ZentaoProjectBuild zentaoProject) throws ZentaoRestException {
-        JSONObject projectJson = (JSONObject) JSON.toJSON(zentaoProject);
-        String result = RestUtil.postMethod(ZenTaoAPIContent.POST_CREATE_PROJECT + "zentaosid="
-                + sessionId, projectJson);
-
+    public String buildProject(ZentaoProjectCreate zentaoProjectCreate) throws ZentaoRestException {
+        JSONObject projectJson = (JSONObject) JSON.toJSON(zentaoProjectCreate);
+        String url = ZenTaoAPIContent.POST_CREATE_PROJECT + session + JSON_SUFFIX;
+        String result = RestUtil.postMethod(url, projectJson);
         return result;
     }
+
+    /**
+     * 获取所有项目
+     * @return
+     * @throws ZentaoRestException
+     */
+    public List<ZentaoProjectBasic> getAllProject() throws ZentaoRestException {
+        List<ZentaoProjectBasic> basicProjectInfoList = new ArrayList<>();
+        // 获取所有项目
+        String result = RestUtil.postMethod(ZenTaoAPIContent.GET_ALL_PROJECT + session + JSON_SUFFIX , null);
+        // 解析json
+        JSONObject jsonData = JsonUtil.zentaoDataToJson(result);
+        JSONObject projectJson = null;
+        if(jsonData.containsKey(PROJECTS)){
+            projectJson = JSONObject.parseObject(jsonData.getString(PROJECTS));
+        }
+        // 组装数据
+        for(String key: projectJson.keySet()){
+            basicProjectInfoList.add(new ZentaoProjectBasic(key, projectJson.getString(key)));
+        }
+        return basicProjectInfoList;
+    }
+
+//    public String buildProduct(ZentaoProductCreate product){
+//
+//    }
+
+    /**
+     * 获取所有产品
+     */
+    public String getAllProduct() throws ZentaoRestException {
+        // 获取所有产品
+        String result = RestUtil.postMethod(ZenTaoAPIContent.GET_ALL_PRODUCT + session + JSON_SUFFIX , null);
+        // 解析json
+        JSONObject jsonData = JsonUtil.zentaoDataToJson(result);
+        JSONObject projectJson = null;
+        if(jsonData.containsKey(PRODUCTS)){
+            projectJson = JSONObject.parseObject(jsonData.getString(PRODUCTS));
+        }
+        // 组装数据
+        return result;
+    }
+//    public String deleteProject(String projectId){
+//
+//    }
+
 //    // 创建产品
 //    public void buildProduct(String sessionId, ){
 //
@@ -69,12 +94,20 @@ public class ZentaoService {
 
     public static void main(String[] args) throws ZentaoRestException {
         ZentaoService zentaoService = new ZentaoService();
-        ZentaoProjectBuild project = new ZentaoProjectBuild();
-        project.setName("testProject003");
-        project.setCode("testProject003");
-        project.setBegin("2020-4-20");
-        project.setEnd("2020-4-25");
-        System.out.println(zentaoService.buildProject(zentaoService.loginZentao(), project));
+
+        // 获取所有
+        zentaoService.getAllProduct();
+        // 获取所有项目
+//        List<ZentaoProjectBasic> projectBasics = zentaoService.getAllProject();
+
+        // 创建项目
+//        ZentaoProjectBuild project = new ZentaoProjectBuild();
+//        project.setName("testProject006");
+//        project.setCode("testProject006");
+//        project.setBegin("2020-4-20");
+//        project.setEnd("2020-4-25");
+//        project.setDays(5);
+//        System.out.println(zentaoService.buildProject(project));
     }
 
 

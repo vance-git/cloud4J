@@ -15,10 +15,20 @@ public class ZenTaoAPIContent {
     // 登录
     public static final String POST_LOGIN = IP + "user-login.json?";
     // 登出
-    public static final String GET_LOGOUT = IP + "user-logout.json";
+    public static final String GET_LOGOUT = IP + "user-logout.json?";
 
     /**
      * 项目接口
      */
-    public static final String POST_CREATE_PROJECT = IP + "api-getModel-project-create-copyProjectID=1.json";
+    // 创建
+    public static final String POST_CREATE_PROJECT = IP + "project-create.json";
+    // 查询所有
+    public static final String GET_ALL_PROJECT = IP + "project-index-no.json";
+
+
+    /**
+     * 产品接口
+     */
+    public static final String POST_CREATE_PRODUCT = IP + "product-create.json";
+    public static final String GET_ALL_PRODUCT = IP + "product-index-no.json";
 }

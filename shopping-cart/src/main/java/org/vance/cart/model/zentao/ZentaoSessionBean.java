@@ -4,7 +4,7 @@ package org.vance.cart.model.zentao;
  * @Description: TODO
  * @Author: gaofan 12183
  */
-public class ZentaoSession {
+public class ZentaoSessionBean {
     private String title;
     private String sessionName;
     private String sessionID;

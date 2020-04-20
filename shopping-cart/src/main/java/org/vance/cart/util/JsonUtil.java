@@ -10,7 +10,7 @@ public class JsonUtil {
 
     private static final String DATA = "data";
 
-    public static  <T> T parseZentaoData(String zentaoGetJsonStr, Class<T> clazz){
+    public static  <T> T zentaoDataToObj(String zentaoGetJsonStr, Class<T> clazz){
         String dataJson = null;
 
         JSONObject zentaoGetJson = JSONObject.parseObject(zentaoGetJsonStr);
@@ -23,5 +23,14 @@ public class JsonUtil {
             return JSONObject.parseObject(dataJson, clazz);
         }
         return null;
+    }
+
+    public static JSONObject zentaoDataToJson(String zentaoGetJsonStr){
+        JSONObject zentaoGetJson = JSONObject.parseObject(zentaoGetJsonStr);
+        String dataJson = null;
+        if(zentaoGetJson.containsKey(DATA)){
+            dataJson = (String) zentaoGetJson.get(DATA);
+        }
+        return JSONObject.parseObject(dataJson);
     }
 }
